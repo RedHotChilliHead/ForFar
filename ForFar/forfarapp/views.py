@@ -19,9 +19,9 @@ class CheckCreateView(APIView):
         """
         Метод обработки POST-запроса ERP к API, который создает чеки с использованием информации из полученного JSON
         {"id": 123457,
-"items": {"name": "Поке", "quantity": 2, "unit_price": 700},
-"price": 1400, "client": {"name": "Ира", "phone": 9173332223},
-"address": "г. Уфа, ул. Ленина, д. 42", "point_id": 2}
+    "items": {"name": "Поке", "quantity": 2, "unit_price": 700},
+    "price": 1400, "client": {"name": "Ира", "phone": 9173332223},
+    "address": "г. Уфа, ул. Ленина, д. 42", "point_id": 2}
         """
         order = request.data
         checks = Check.objects.filter(order=order)
@@ -106,8 +106,3 @@ def generate_checks(request, check_id):
     generate_pdf.delay(check_id)  # Ставим задачу в очередь
     print('Ставим задачу в очередь')
     return JsonResponse({'status': 'PDF generation task queued.'})
-
-# Асинхронный воркер с помощью wkhtmltopdf генерируют PDF-файл из HTML-шаблон.
-# curl -X POST -vv -F 'file=@path/to/local/file.html' http://<docker-host>:<port>/ -o path/to/output/file.pdf
-# Имя файла должно иметь следущий вид <ID заказа>_<тип чека>.pdf (123456_client.pdf).
-# Файлы должны хранится в папке media/pdf в корне проекта.
