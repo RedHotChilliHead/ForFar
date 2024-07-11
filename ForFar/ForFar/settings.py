@@ -11,10 +11,10 @@ https://docs.djangoproject.com/en/5.0/ref/settings/
 """
 
 from pathlib import Path
+import os
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
-
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/5.0/howto/deployment/checklist/
@@ -27,7 +27,6 @@ DEBUG = True
 
 ALLOWED_HOSTS = []
 
-
 # Application definition
 
 INSTALLED_APPS = [
@@ -37,7 +36,8 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'ForFar.forfarapp.apps.ForfarappConfig',
+    'rest_framework',
+    'forfarapp.apps.ForfarappConfig',
 ]
 
 MIDDLEWARE = [
@@ -71,7 +71,6 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'ForFar.wsgi.application'
 
-
 # Database
 # https://docs.djangoproject.com/en/5.0/ref/settings/#databases
 
@@ -88,8 +87,8 @@ DATABASES = {
         'NAME': 'forfar_db',
         'USER': 'postgres',
         'PASSWORD': 'admin',
-        'HOST': 'localhost',
-        'PORT': '5432',
+        'HOST': 'localhost',  # Имя сервиса в Docker Compose
+        'PORT': '54321',
     }
 }
 
@@ -111,6 +110,29 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
+# Настройки Redis
+RQ_QUEUES = {
+    'default': {
+        'HOST': 'localhost',
+        'PORT': 6379,
+        'DB': 0,
+        'DEFAULT_TIMEOUT': None,  # Устанавливаем None, чтобы отключить таймаут для задач
+        'DEFAULT_RESULT_TTL': None,  # Устанавливаем None, чтобы результат задачи не истекал
+        'WORKER_CLASS': 'rq.worker.SimpleWorker',
+    }
+}
+
+CELERY_BROKER_URL = 'redis://localhost:6379/0'  # URL для подключения к Redis
+CELERY_RESULT_BACKEND = 'redis://localhost:6379/0'  # URL для хранения результатов задач
+
+CELERY_ACCEPT_CONTENT = ['json']
+CELERY_TASK_SERIALIZER = 'json'
+CELERY_RESULT_SERIALIZER = 'json'
+CELERY_TASK_ALWAYS_EAGER = False
+
+# Настройки wkhtmltopdf
+WKHTMLTOPDF_HOST = 'localhost'  # или имя контейнера
+WKHTMLTOPDF_PORT = '80'
 
 # Internationalization
 # https://docs.djangoproject.com/en/5.0/topics/i18n/
@@ -123,11 +145,15 @@ USE_I18N = True
 
 USE_TZ = True
 
-
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/5.0/howto/static-files/
 
 STATIC_URL = 'static/'
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+MEDIA_URL = '/media/'
+
+# Путь к директории для хранения PDF файлов
+PDF_ROOT = os.path.join(MEDIA_ROOT, 'pdf')
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.0/ref/settings/#default-auto-field

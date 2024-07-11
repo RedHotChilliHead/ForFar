@@ -128,3 +128,12 @@ dmypy.json
 cython_debug/
 
 .idea/
+
+заметка.txt
+/media/*
+!/media/html/
+/media/html/*
+!/media/html/.gitkeep
+!/media/pdf/
+/media/pdf/*
+!/media/pdf/.gitkeep
