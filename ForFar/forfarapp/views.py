@@ -1,4 +1,5 @@
 import os
+import logging
 
 from rest_framework.views import APIView
 from rest_framework.request import Request
@@ -12,6 +13,8 @@ from forfarapp.serializers import CheckSerializer
 from django.shortcuts import get_object_or_404
 from django.http import JsonResponse
 from .tasks import generate_pdf
+
+logging.basicConfig(level=logging.INFO)
 
 
 class CheckCreateView(APIView):
@@ -102,7 +105,6 @@ def generate_checks(request, check_id):
     Функция, которая будет ставить задачи в очередь
     """
     check = get_object_or_404(Check, id=check_id)
-    print('check_id=', check_id)
     generate_pdf.delay(check_id)  # Ставим задачу в очередь
-    print('Ставим задачу в очередь')
+    logging.info('We put the task in the queue for the receipt with the id %s', check_id)
     return JsonResponse({'status': 'PDF generation task queued.'})
