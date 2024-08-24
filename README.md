@@ -125,9 +125,8 @@ GET http://127.0.0.1:8000/forfar/check/
 ```
 #### Пример запроса
 
-```http
-GET
-http://127.0.0.1:8000/forfar/check/?api_key=generated_api_key_5&check_id=1
+```
+GET http://127.0.0.1:8000/forfar/check/?api_key=generated_api_key_5&check_id=1
 ```
 , где api_key, это уникальный api-ключ принтера, а check_id - первичный ключ чека, предназначенного для печати на этом принтере
 
